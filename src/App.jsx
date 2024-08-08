@@ -6,20 +6,33 @@ const App = () => {
   const [windSpeed, setWindSpeed] = useState(10);
   const [temperature,setTemparature]=useState(36);
 
+  const[list,setList]=useState([])
   const apiKey = '910948c2645b69157020047431ce98aa';
 
   const handleSearch = async () => {
     try {
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`);
-      const data = await response.json();
+      const w_response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`);
+      const w_data = await w_response.json();
 
-      setHumidity(data.main.humidity);
-      setWindSpeed(data.wind.speed);
+      console.log('city', w_data.name, 'id', w_data.id);
+      
+      const fc_response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?id=${w_data.id}&appid=${apiKey}&units=metric`);
+      const fc_data = await fc_response.json();
+
+      setHumidity(w_data.main.humidity);
+      setWindSpeed(w_data.wind.speed);
+
+      setList(fc_data.list)
+
+      //console.log('forecast',fc_data.list);
+      
     } catch (error) {
       console.error('Error fetching weather data:', error);
       alert('Error fetching weather data. Please try again later.');
     }
   };
+  
+  // `http://api.openweathermap.org/data/2.5/forecast?id=524901&appid={API key}
 
   const getUserLocation = () => {
     if (navigator.geolocation) {
@@ -51,6 +64,9 @@ const App = () => {
       alert('Geolocation is not supported by this browser.');
     }
   };
+
+  console.log('...',list);
+  
 
   return (
     <div className="container">
@@ -88,6 +104,17 @@ const App = () => {
           <p>temperature</p>
            </div>
       </div>
+
+      {
+        list.length !== 0 ? (
+        <div>Temp: 
+        {          
+          list[1].main.temp
+        } °C
+        </div>
+        ):( <>loading....</>)
+      }
+      
     </div>
   );
 };
