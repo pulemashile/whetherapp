@@ -1,122 +1,157 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass, faLocationArrow, faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import "./App.css"
 
-const App = () => {
-  const [location, setLocation] = useState('New York, NY');
-  const [humidity, setHumidity] = useState(60);
-  const [windSpeed, setWindSpeed] = useState(10);
-  const [temperature,setTemparature]=useState(36);
+const WeatherApp = () => {
+  let location = '';
+  const [searchInput, setSearchInput] = useState('');
+  const [weatherData, setWeatherData] = useState(null);
+  const [hourlyForecast, setHourlyForecast] = useState([]);
+  const [dailyForecast, setDailyForecast] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [units, setUnits] = useState('metric');
+  const [theme, setTheme] = useState('light');
 
-  const[list,setList]=useState([])
-  const apiKey = '910948c2645b69157020047431ce98aa';
+  const apiKey = 'c172f3bb497fb9ea39f1d62565ac9545';
 
   const handleSearch = async () => {
+    if (searchInput.trim() === '') {
+      setError('Please enter a location');
+      return;
+    }
+
     try {
-      const w_response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`);
+      setLoading(true);
+      setSearchInput('');
+      setError('');
+      const w_response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${searchInput}&appid=${apiKey}&units=${units}`);
       const w_data = await w_response.json();
 
-      console.log('city', w_data.name, 'id', w_data.id);
-      
-      const fc_response = await fetch(`http://api.openweathermap.org/data/2.5/forecast?id=${w_data.id}&appid=${apiKey}&units=metric`);
+      const fc_response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?id=${w_data.id}&appid=${apiKey}&units=${units}`);
       const fc_data = await fc_response.json();
 
-      setHumidity(w_data.main.humidity);
-      setWindSpeed(w_data.wind.speed);
-
-      setList(fc_data.list)
-
-      //console.log('forecast',fc_data.list);
-      
+      setWeatherData(w_data);
+      setHourlyForecast(fc_data.list.slice(1, 6));
     } catch (error) {
       console.error('Error fetching weather data:', error);
-      alert('Error fetching weather data. Please try again later.');
+      setError('Error fetching weather data. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   };
-  
-  // `http://api.openweathermap.org/data/2.5/forecast?id=524901&appid={API key}
 
   const getUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`)
+          fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}`)
             .then((response) => response.json())
             .then((data) => {
-              const city = data.name;
-              const country = data.sys.country;
-              setLocation(`${city}, ${country}`);
-              setHumidity(data.main.humidity);
-              setWindSpeed(data.wind.speed);
-              setTemparature(data.main.temp)
-              
+              setWeatherData(data);
+              setHourlyForecast([]);
             })
             .catch((error) => {
               console.error('Error fetching user location:', error);
-              alert('Error fetching user location. Please try again later.');
+              setError('Error fetching user location. Please try again later.');
             });
         },
         (error) => {
           console.error('Error getting user location:', error);
-          alert('Error getting user location. Please check your browser settings.');
+          setError('Error getting user location. Please check your browser settings.');
         }
       );
     } else {
-      alert('Geolocation is not supported by this browser.');
+      setError('Geolocation is not supported by this browser.');
     }
   };
 
-  console.log('...',list);
-  
+  const toggleUnits = () => {
+    setUnits(units === 'metric' ? 'imperial' : 'metric');
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  useEffect(() => {
+    if (location) {
+      handleSearch();
+    }
+  }, [location, units]);
 
   return (
-    <div className="container">
+    <div className={`container ${theme}`}>
       <h1>Weather App</h1>
       <div className="search-container">
         <input
           type="text"
-          id="search-input"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
           placeholder="Enter a location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
         />
-        <button id="search-button" onClick={handleSearch}>
-          Search
+        <button onClick={handleSearch}>
+          <FontAwesomeIcon icon={faMagnifyingGlass} />
         </button>
-        <button id="locate-button" onClick={getUserLocation}>
-          Use My Location
+        <button onClick={getUserLocation}>
+          <FontAwesomeIcon icon={faLocationArrow} />
+        </button>
+        <button onClick={toggleUnits}>
+          {units === 'metric' ? '°C' : '°F'}
+        </button>
+        <button onClick={toggleTheme}>
+          <FontAwesomeIcon icon={theme === 'light' ? faMoon : faSun} />
         </button>
       </div>
-      <div className="weather-info">
-        <div>
-          <h2 id="location">{location}</h2>
-          <p>Location</p>
+      {error && <div className="error-message">{error}</div>}
+      {loading ? (
+        <div className="loading-message">Loading...</div>
+      ) : weatherData ? (
+        <div className="weather-info">
+          <div className="weather-data">
+            <h2>{`${weatherData.name}, ${weatherData.sys.country}`}</h2>
+            <p>
+              <span className="weather-icon">
+                <img src={`http://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`} alt={weatherData.weather[0].description} />
+              </span>
+              <span className="temperature">{`${weatherData.main.temp} ${units === 'metric' ? '°C' : '°F'}`}</span>
+            </p>
+            <p className="weather-description">{weatherData.weather[0].description}</p>
+            <div className="weather-details">
+              <div>
+                <p>Humidity</p>
+                <p>{`${weatherData.main.humidity}%`}</p>
+              </div>
+              <div>
+                <p>Wind Speed</p>
+                <p>{`${weatherData.wind.speed} ${units === 'metric' ? 'm/s' : 'mph'}`}</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <h2 id="humidity">{humidity}%</h2>
-          <p>Humidity</p>
-        </div>
-        <div>
-          <h2 id="wind-speed">{windSpeed} m/s</h2>
-          <p>Wind Speed</p>
-           </div>
-           <div>
-           <h2 id="temperature">{temperature} °C</h2>
-          <p>temperature</p>
-           </div>
-      </div>
+      ) : !loading && !weatherData && !error ? (
+        <div className="no-data-message">No weather data found for the given location.</div>
+      ) : null}
 
-      {
-        list.length !== 0 ? (
-        <div>Temp: 
-        {          
-          list[1].main.temp
-        } °C
+      <div className="hourly-forecast">
+        <h2>Hourly Forecast</h2>
+        <div className="hourly-forecast-container">
+          {hourlyForecast.map((hour, index) => (
+            <div key={index} className="hourly-forecast-item">
+              <p className="hour">{new Date(hour.dt * 1000).getHours()}:00</p>
+              <div className="weather-icon">
+                <img src={`http://openweathermap.org/img/w/${hour.weather[0].icon}.png`} alt={hour.weather[0].description} />
+              </div>
+              <p className="temperature">{`${hour.main.temp} ${units === 'metric' ? '°C' : '°F'}`}</p>
+              <p className="weather-description">{hour.weather[0].description}</p>
+            </div>
+          ))}
         </div>
-        ):( <>loading....</>)
-      }
-      
+      </div>
     </div>
   );
 };
 
-export default App;
+export default WeatherApp;

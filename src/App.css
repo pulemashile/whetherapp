@@ -1,61 +1,118 @@
-body {
-  font-family: Arial, sans-serif;
+/* Reset styles */
+* {
   margin: 0;
   padding: 0;
-  background-color: #f0f0f0;
+  box-sizing: border-box;
 }
+
+/* Global styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+
+
+
 
 .container {
-  max-width: 400px;
-  margin: 50px auto;
+  max-width: 800px;
+  margin: 0 auto;
   padding: 20px;
-  background-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
+  background-color: #f0f0f0;
+  color: #333;
+  font-family: Arial, sans-serif;
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
+.container.dark {
+  background-color: #333;
+  color: #f0f0f0;
 }
 
 .search-container {
+  display: flex;
+  justify-content: center;
   margin-bottom: 20px;
-  text-align: center;
 }
 
-#search-input {
+.search-container input,
+.search-container button {
+  margin: 0 5px;
   padding: 10px;
+  border: none;
+  border-radius: 5px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 70%;
 }
 
-#search-button {
-  padding: 10px 20px;
-  font-size: 16px;
+.search-container button {
   background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  color: #fff;
   cursor: pointer;
 }
 
 .weather-info {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-bottom: 20px;
 }
 
-.weather-info div {
+.weather-data {
+  text-align: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.weather-data h2 {
+  margin-top: 0;
+}
+
+.weather-icon img {
+  width: 50px;
+  height: 50px;
+}
+
+.temperature {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.weather-description {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.weather-details {
+  display: flex;
+  justify-content: space-around;
+  font-size: 16px;
+}
+
+.hourly-forecast {
   text-align: center;
 }
 
-.weather-info h2 {
-  margin: 0;
+.hourly-forecast-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.weather-info p {
-  margin: 5px 0 0 0;
+.hourly-forecast-item {
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  width: 100px;
+}
+
+.error-message,
+.loading-message,
+.no-data-message {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 20px;
 }
