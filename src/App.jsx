@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faLocationArrow, faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
 import "./App.css"
-
+import video from '../src/assets/173530-849610807.mp4';
 const WeatherApp = () => {
   let location = '';
   const [searchInput, setSearchInput] = useState('');
@@ -83,7 +84,8 @@ const WeatherApp = () => {
   }, [location, units]);
 
   return (
-    <div className={`container ${theme}`}>
+    <div className='parent-element'>
+        <div className={`container ${theme}`} >
       <h1>Weather App</h1>
       <div className="search-container">
         <input
@@ -149,8 +151,13 @@ const WeatherApp = () => {
             </div>
           ))}
         </div>
+       
       </div>
     </div>
+    
+    </div>
+        
+    
   );
 };
 
