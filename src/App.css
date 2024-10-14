@@ -3,8 +3,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-image: url('./assets/173530-849610807.mp4');
-
 }
 
 /* Global styles */
@@ -13,13 +11,9 @@ body {
   color: #333;
   display: flex;
   justify-content: center;
-  background: url('https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjN6cTg5eWszMGVlOThjcnR6dDNvdDlkazI5dXYybG5vcjVmMmV4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tnPxFTth7qoDiw1rnm/giphy.webp') no-repeat ;
+  background: url('https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjN6cTg5eWszMGVlOThjcnR6dDNvdDlkazI5dXYybG5vcjVmMmV4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tnPxFTth7qoDiw1rnm/giphy.webp') no-repeat;
   background-size: cover;
 }
-
-
-
-
 
 .container {
   max-width: 800px;
@@ -122,4 +116,71 @@ body {
   text-align: center;
   font-size: 18px;
   margin-bottom: 20px;
+}
+
+/* Desktop styles (>= 1200px) */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1200px;
+  }
+  .search-container {
+    flex-direction: row;
+  }
+  .hourly-forecast-container {
+    flex-wrap: wrap;
+  }
+}
+
+/* Tablet styles (>= 768px and < 1200px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .container {
+    max-width: 900px;
+  }
+  .search-container {
+    flex-direction: row;
+  }
+  .hourly-forecast-container {
+    flex-wrap: wrap;
+  }
+}
+
+/* Mobile styles (< 768px) */
+@media (max-width: 767px) {
+  .container {
+    max-width: 600px;
+  }
+  .search-container {
+    
+    align-items: center;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  .search-container input {
+    width: 50%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+  }
+  .search-container button {
+    width: 10%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .weather-data {
+    padding: 10px;
+  }
+  .hourly-forecast-container {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .hourly-forecast-item {
+    width: 100%;
+  }
 }
