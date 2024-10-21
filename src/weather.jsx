@@ -23,17 +23,52 @@ const WeatherApp = () => {
       setError('Please enter a location');
       return;
     }
-
+  
     try {
       setLoading(true);
       setSearchInput('');
       setError('');
+  
+      // Check if device is online or offline
+      const isOnline = navigator.onLine;
+  
+      if (!isOnline) {
+        // If offline, use cached data from local storage
+        const cachedWeatherData = localStorage.getItem('weatherData');
+        const cachedForecastData = localStorage.getItem('hourlyForecast');
+  
+        if (cachedWeatherData && cachedForecastData) {
+          setWeatherData(JSON.parse(cachedWeatherData));
+          setHourlyForecast(JSON.parse(cachedForecastData));
+          setLoading(false);
+          return;
+        } else {
+          setError('No cached data available. Please try again when online.');
+          setLoading(false);
+          return;
+        }
+      }
+  
+      // If online, fetch latest data from API
       const w_response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${searchInput}&appid=${apiKey}&units=${units}`);
+  
+      if (!w_response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
       const w_data = await w_response.json();
-
       const fc_response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?id=${w_data.id}&appid=${apiKey}&units=${units}`);
+  
+      if (!fc_response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
       const fc_data = await fc_response.json();
-
+  
+      // Save the fetched data to local storage
+      localStorage.setItem('weatherData', JSON.stringify(w_data));
+      localStorage.setItem('hourlyForecast', JSON.stringify(fc_data.list.slice(1, 6)));
+  
       setWeatherData(w_data);
       setHourlyForecast(fc_data.list.slice(1, 6));
     } catch (error) {
