@@ -11,19 +11,22 @@ body {
   color: #333;
   display: flex;
   justify-content: center;
-  background: url('https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjN6cTg5eWszMGVlOThjcnR6dDNvdDlkazI5dXYybG5vcjVmMmV4OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tnPxFTth7qoDiw1rnm/giphy.webp') no-repeat;
+  background-color: #37AFE1;
   background-size: cover;
+  min-height: 100vh; /* Ensure full height for the body */
 }
 
 .container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f0f0f0;
+  background-color: #37AFE1;
   color: #333;
   font-family: Arial, sans-serif;
   justify-content: center;
   align-items: center;
+  position: relative;
+  z-index: 1; /* Make sure the container is relative for positioning the woman image */
 }
 
 .container.dark {
@@ -34,7 +37,12 @@ body {
 .search-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 20px;
+  position: relative; 
+  box-shadow: 10px 0 10px rgba(0, 0, 0, 0.1);
+  /* This is important for absolute positioning of the woman image */
+  z-index: 2;
 }
 
 .search-container input,
@@ -47,7 +55,7 @@ body {
 }
 
 .search-container button {
-  background-color: #4CAF50;
+  background-color: #37AFE1;
   color: #fff;
   cursor: pointer;
 }
@@ -109,7 +117,8 @@ body {
   margin: 10px;
   width: 100px;
 }
-.parent-element{
+
+.parent-element {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -127,7 +136,7 @@ body {
 /* Desktop styles (>= 1200px) */
 @media (min-width: 1200px) {
   .container {
-  
+    /* Additional styles for larger screens, if necessary */
   }
   .search-container {
     flex-direction: row;
@@ -142,18 +151,23 @@ body {
   .container {
     max-width: 900px;
   }
+
   .search-container {
     flex-direction: row;
   }
+
   .hourly-forecast-container {
     flex-wrap: wrap;
   }
 }
+
 /* Mobile styles (< 768px) */
 @media (max-width: 767px) {
   .container {
     padding: 10px;
+    
   }
+
   .search-container {
     align-items: center;
     padding: 10px;
@@ -161,62 +175,141 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
+
   .search-container input {
-    width: 35%;
+    width: 50%;
     padding: 5px;
+    margin-right: 12px;
     margin-bottom: 5px;
     border: none;
     border-radius: 5px;
   }
+
   .search-container button {
-    width: 5%;
+    width: 8%;
     padding: 5px;
-    background-color: #4CAF50;
+    background-color: #78B3CE;
+    margin-left: 2px;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
   }
+
   .weather-data {
     padding: 5px;
     background: #000;
-
   }
 
-  .hourly-forecast-item{
+  .hourly-forecast-item {
     width: 100px;
-background: #000;
-font-size: small;
-
+    background: #000;
+    font-size: small;
   }
-  
 
-  .temperature{
+  .temperature {
     font-size: 12px;
   }
+
   .hourly-forecast-container {
     flex-wrap: nowrap;
     overflow-x: auto;
   }
-  .hourly-forecast-item {
-    width: 60px; /* adjust the width to fit the screen */
-  }
 
+  .hourly-forecast-item {
+    width: 60px;
+  }
 
   .weather-data h2 {
     font-size: 20px;
-
   }
-  .weather-description{
+
+  .weather-description {
     font-size: 12px;
   }
-  
-  .daily-forecast-container{
-    display: flex;
 
+  .daily-forecast-container {
+    display: flex;
+    flex-direction: row;
   }
-  .daily-forecast-item{
+
+  .daily-forecast-item {
     display: flex;
   }
-  
+
+  .daily-forecast {
+    display: flex;
+    flex-direction: row;
+  }
 }
+
+/* P/* Position the woman image to the side of the input */
+.responsive-woman-image {
+  position: absolute;
+  right: 560px; /* Adjust the value to position the image on the right side */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 320px;
+  height: auto;
+  transition: all 0.3s ease;
+  z-index: -1; /* Ensure the image stays in the background */
+}
+
+/* Make the woman image responsive on smaller screens */
+@media (max-width: 768px) {
+  .responsive-woman-image {
+    right: 20px; /* Adjust the value for smaller screens */
+    width: 100px;
+    padding-right: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .responsive-woman-image {
+    right: -50px; /* Adjust the value for even smaller screens */
+    width: 250px;
+    margin-top: 200px;
+    padding-left: 50px; /* Hide the image on very small screens */
+  }
+}
+/* General styles for the image */
+.responsive-image {
+  width: 200px;
+  height: 200px;
+}
+
+/* Make the image smaller on smaller screens */
+@media (max-width: 768px) {
+  .responsive-image {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+/* Make the image even smaller on very small screens (phones in portrait mode) */
+@media (max-width: 480px) {
+  .responsive-image {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+/* Optional: You can tweak the width/height if needed based on different breakpoints */
+@media (max-width: 320px) {
+  .responsive-image {
+    width: 100px;
+    height: 100px;
+    margin-right: auto;
+  }
+}
+h2 {
+  font-size: 24px;
+  font-weight: 500;
+  color: #333;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+
